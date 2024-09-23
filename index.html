@@ -12,6 +12,7 @@
             align-items: center;
             height: 100vh;
             background-color: #f4f4f4;
+            flex-direction: column;
         }
         .container {
             background: white;
@@ -108,6 +109,11 @@
         .wrong {
             background-color: red;
         }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -125,6 +131,10 @@
     <div id="notification" class="notification"></div>
     <div class="guesses" id="guessesList"></div>
 </div>
+
+<footer style="text-align: center; margin-top: 20px; font-size: 14px;">
+    <p>By <a href="https://github.com/IKKNIGHT/Element-Guessing-Game" style="color: #007bff; text-decoration: none;">Isaaq Khanooni</a></p>
+</footer>
 
 <script>
     const elements = [
@@ -305,7 +315,7 @@
 
     function handleGuess() {
         const userGuess = document.getElementById('userGuess').value;
-        if (userGuess.toLowerCase() === currentElement.name.toLowerCase()) {
+        if (userGuess.toLowerCase().includes(currentElement.name.toLowerCase())) {
             correctCount++;
             addGuessToList(currentElement.symbol, true);
             updateTracker(true);
