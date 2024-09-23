@@ -28,14 +28,6 @@ You can try the game live at the following links:
 - **CSS** for styling
 - **JavaScript** for game logic
 
-## Contributing
-
-Contributions are welcome! If you have suggestions for improvements or new features, feel free to open an issue or submit a pull request.
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).
-
 ---
 
 ### Acknowledgments
