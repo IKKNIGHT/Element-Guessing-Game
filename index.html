@@ -316,6 +316,18 @@
         }
     });
 
+    // Prevent spaces and pasting in the input
+    const userGuessInput = document.getElementById('userGuess');
+    userGuessInput.addEventListener('keypress', (event) => {
+        if (event.key === ' ') {
+            event.preventDefault();
+        }
+    });
+
+    userGuessInput.addEventListener('paste', (event) => {
+        event.preventDefault();
+    });
+
     function handleGuess() {
         const userGuess = document.getElementById('userGuess').value;
         if (userGuess.toLowerCase().includes(currentElement.name.toLowerCase())) {
