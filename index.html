@@ -125,6 +125,16 @@
             font-size: 12px;
             color: #555;
         }
+        .formatted-guess {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .correct-letter {
+            color: green;
+        }
+        .incorrect-letter {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -138,14 +148,17 @@
         <h2>Tracker</h2>
         <p>Correct: <span id="correctCount">0</span></p>
         <p>Wrong: <span id="wrongCount">0</span></p>
+        <p>Correct Percentage: <span id="correctPercentage">0%</span></p>
+        <p>Current Streak: <span id="currentStreak">0</span></p>
     </div>
+    <div id="formattedGuess" class="formatted-guess"></div>
     <div id="notification" class="notification"></div>
     <div class="guesses" id="guessesList"></div>
 </div>
 
 <footer>
     <p>By <a href="https://github.com/IKKNIGHT/Element-Guessing-Game" style="color: #007bff; text-decoration: none;">Isaaq Khanooni</a></p>
-    <div class="version">V1.0.8</div>
+    <div class="version">V1.0.7</div>
 </footer>
 
 <script>
@@ -273,6 +286,8 @@
     let correctCount = 0;
     let wrongCount = 0;
     let currentElement;
+    let totalAttempts = 0;
+    let currentStreak = 0;
 
     function getRandomElement() {
         const randomIndex = Math.floor(Math.random() * elements.length);
@@ -283,6 +298,7 @@
         currentElement = getRandomElement();
         document.getElementById('elementSymbol').innerText = currentElement.symbol;
         document.getElementById('userGuess').value = '';
+        document.getElementById('formattedGuess').innerHTML = ''; // Clear the previous guess
     }
 
     function showNotification(message) {
@@ -307,6 +323,17 @@
         guessesList.appendChild(guessElement);
     }
 
+    function formatGuess(userGuess) {
+        const formatted = [...userGuess].map((char, index) => {
+            if (char === currentElement.name[index]) {
+                return `<span class="correct-letter">${char}</span>`;
+            } else {
+                return `<span class="incorrect-letter">${char}</span>`;
+            }
+        }).join('');
+        document.getElementById('formattedGuess').innerHTML = formatted;
+    }
+
     function updateTracker(isCorrect) {
         const tracker = document.getElementById('tracker');
         if (isCorrect) {
@@ -316,6 +343,24 @@
             tracker.classList.add('wrong-tracker');
             tracker.classList.remove('correct-tracker');
         }
+    }
+
+    function updateStatistics(isCorrect) {
+        totalAttempts++;
+        if (isCorrect) {
+            correctCount++;
+            currentStreak++;
+        } else {
+            wrongCount++;
+            currentStreak = 0; // Reset streak on wrong answer
+        }
+
+        // Update the correct percentage
+        const correctPercentage = ((correctCount / totalAttempts) * 100).toFixed(2) || 0;
+        document.getElementById('correctCount').innerText = correctCount;
+        document.getElementById('wrongCount').innerText = wrongCount;
+        document.getElementById('correctPercentage').innerText = `${correctPercentage}%`;
+        document.getElementById('currentStreak').innerText = currentStreak;
     }
 
     document.getElementById('submitGuess').addEventListener('click', handleGuess);
@@ -340,18 +385,17 @@
 
     function handleGuess() {
         const userGuess = document.getElementById('userGuess').value;
-        if (userGuess.toLowerCase().includes(currentElement.name.toLowerCase())) {
-            correctCount++;
-            addGuessToList(currentElement.symbol, true);
-            updateTracker(true);
-        } else {
-            wrongCount++;
-            addGuessToList(currentElement.symbol, false);
-            updateTracker(false);
+        formatGuess(userGuess); // Display formatted guess
+        const isCorrect = userGuess.toLowerCase().includes(currentElement.name.toLowerCase());
+
+        addGuessToList(currentElement.symbol, isCorrect);
+        updateTracker(isCorrect);
+        updateStatistics(isCorrect); // Update statistics
+
+        if (!isCorrect) {
             showNotification(`Correct answer: ${currentElement.name}`);
         }
-        document.getElementById('correctCount').innerText = correctCount;
-        document.getElementById('wrongCount').innerText = wrongCount;
+
         updateElement();
     }
 
